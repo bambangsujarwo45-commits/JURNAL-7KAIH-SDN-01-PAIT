@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal 7 KAIH - SD Negeri 01 Pait</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Canvas Confetti for rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        school: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .habit-card {
+            transition: all 0.25s ease-in-out;
+        }
+        .habit-card:hover {
+            transform: translateY(-2px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Auth Section (Modal / Screen overlay when not logged in) -->
+    <div id="authOverlay" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200">
+            <!-- School Identity Logo Header -->
+            <div class="text-center mb-6">
+                <!-- SVG Logo based on official SDN 01 Pait Emblem -->
+                <div class="w-24 h-24 mx-auto mb-2 flex items-center justify-center">
+                    <svg viewBox="0 0 300 300" class="w-full h-full drop-shadow-md">
+                        <!-- Outer Shield Outline -->
+                        <path d="M 150 45 C 210 45, 235 60, 235 180 C 235 210, 180 230, 150 235 C 120 230, 65 210, 65 180 C 65 60, 90 45, 150 45 Z" fill="#2d3e50" />
+                        <path d="M 150 52 C 205 52, 227 65, 227 175 C 227 203, 175 222, 150 227 C 125 222, 73 203, 73 175 C 73 65, 95 52, 150 52 Z" fill="#ffffff" />
+                        
+                        <!-- Shield Quadrants -->
+                        <!-- Top Left: Light Blue - Book -->
+                        <path d="M 78 70 L 146 70 L 146 136 L 78 136 Z" fill="#3b9ebb" />
+                        <!-- Top Right: Orange - Globe -->
+                        <path d="M 154 70 L 222 70 L 222 136 L 154 136 Z" fill="#e67e22" />
+                        <!-- Bottom Left: Orange - Lightbulb -->
+                        <path d="M 78 144 L 146 144 L 146 205 C 120 205, 90 195, 78 180 Z" fill="#e67e22" />
+                        <!-- Bottom Right: Light Blue - Pencil -->
+                        <path d="M 154 144 L 222 144 L 222 180 C 210 195, 180 205, 154 205 Z" fill="#3b9ebb" />
+
+                        <!-- Quadrant Icons -->
+                        <!-- Book Icon (Top-Left) -->
+                        <path d="M 112 88 C 105 85, 92 88, 88 90 L 88 116 C 92 114, 105 111, 112 114 L 112 88 Z" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+                        <path d="M 112 88 C 119 85, 132 88, 136 90 L 136 116 C 132 114, 119 111, 112 114 L 112 88 Z" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+                        
+                        <!-- Globe Icon (Top-Right) -->
+                        <circle cx="188" cy="103" r="14" fill="none" stroke="#ffffff" stroke-width="2.5" />
+                        <ellipse cx="188" cy="103" rx="6" ry="14" fill="none" stroke="#ffffff" stroke-width="2" />
+                        <line x1="174" y1="103" x2="202" y2="103" stroke="#ffffff" stroke-width="2" />
+
+                        <!-- Lightbulb Icon (Bottom-Left) -->
+                        <path d="M 112 160 C 106 160, 102 165, 102 171 C 102 176, 106 179, 108 181 L 108 186 L 116 186 L 116 181 C 118 179, 122 176, 122 171 C 122 165, 118 160, 112 160 Z" fill="none" stroke="#ffffff" stroke-width="2.5" />
+                        <line x1="109" y1="189" x2="115" y2="189" stroke="#ffffff" stroke-width="2.5" />
+
+                        <!-- Pencil Icon (Bottom-Right) -->
+                        <path d="M 198 160 L 202 164 L 180 186 L 174 188 L 176 182 Z" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+
+                        <!-- Laurel Leaves (Left and Right) -->
+                        <g fill="#e67e22">
+                            <!-- Left Laurels -->
+                            <path d="M 50 65 C 40 75, 45 90, 60 90 C 50 80, 50 70, 50 65 Z" />
+                            <path d="M 45 95 C 35 105, 40 120, 55 120 C 45 110, 45 100, 45 95 Z" />
+                            <path d="M 43 125 C 33 135, 38 150, 53 150 C 43 140, 43 130, 43 125 Z" />
+                            <path d="M 45 155 C 35 165, 40 180, 55 180 C 45 170, 45 160, 45 155 Z" />
+                            <path d="M 52 185 C 45 192, 50 205, 62 205 C 52 198, 52 190, 52 185 Z" />
+
+                            <!-- Right Laurels -->
+                            <path d="M 250 65 C 260 75, 255 90, 240 90 C 250 80, 250 70, 250 65 Z" />
+                            <path d="M 255 95 C 265 105, 260 120, 245 120 C 255 110, 255 100, 255 95 Z" />
+                            <path d="M 257 125 C 267 135, 262 150, 247 150 C 257 140, 257 130, 257 125 Z" />
+                            <path d="M 255 155 C 265 165, 260 180, 245 180 C 255 170, 255 160, 255 155 Z" />
+                            <path d="M 248 185 C 255 192, 250 205, 238 205 C 248 198, 248 190, 248 185 Z" />
+                        </g>
+
+                        <!-- Black Ribbon for SDN 01 PAIT -->
+                        <path d="M 40 215 L 65 200 L 235 200 L 260 215 L 245 232 L 230 220 L 70 220 L 55 232 Z" fill="#1e2b37" />
+                        <path d="M 60 200 L 240 200 L 230 225 L 70 225 Z" fill="#2d3e50" stroke="#ffffff" stroke-width="1.5" />
+                        <text x="150" y="218" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="16" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">SDN 01 PAIT</text>
+
+                        <!-- Curved Orange Outline under ribbon -->
+                        <path d="M 95 228 C 130 240, 170 240, 205 228" fill="none" stroke="#e67e22" stroke-width="3" stroke-linecap="round" />
+
+                        <!-- Sub-text: KEC. SIWALAN KAB. PEKALONGAN -->
+                        <text x="150" y="252" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="13" fill="#e67e22" text-anchor="middle" letter-spacing="0.5">KEC. SIWALAN</text>
+                        <text x="150" y="268" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="13" fill="#e67e22" text-anchor="middle" letter-spacing="0.5">KAB. PEKALONGAN</text>
+
+                        <!-- Small Stars -->
+                        <polygon points="58,255 60,260 65,260 61,263 62,268 58,265 54,268 55,263 51,260 56,260" fill="#2d3e50" />
+                        <polygon points="242,255 244,260 249,260 245,263 246,268 242,265 238,268 239,263 235,260 240,260" fill="#2d3e50" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">SD Negeri 01 Pait</h2>
+                <p class="text-xs text-amber-600 font-bold uppercase tracking-wider">Kec. Siwalan - Kab. Pekalongan</p>
+                <p class="text-xs text-slate-500 mt-1 font-medium">Jurnal 7 Kebiasaan Anak Indonesia Hebat (7 KAIH)</p>
+            </div>
+
+            <!-- Tab Switching Auth -->
+            <div class="flex border-b border-slate-200 mb-6 text-sm font-bold">
+                <button id="authTabLogin" onclick="switchAuthTab('login')" class="w-1/2 py-2.5 text-center border-b-2 border-red-600 text-red-600 transition">Masuk</button>
+                <button id="authTabSignup" onclick="switchAuthTab('signup')" class="w-1/2 py-2.5 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition">Daftar Akun Baru</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Peran Akses</label>
+                    <select id="loginRole" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-red-500 transition">
+                        <option value="student">Murid / Siswa</option>
+                        <option value="teacher">Guru / Wali Kelas</option>
+                        <option value="admin">Administrator Sekolah</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">NISN / Username / NIP</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input type="text" id="loginUsername" required placeholder="Masukkan NISN, Username, atau NIP" class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-red-500 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kata Sandi</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-red-500 transition">
+                    </div>
+                </div>
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500">
+                    <span class="font-bold text-slate-700">Info Akun Default:</span><br>
+                    • Admin: <code class="bg-slate-200 px-1 rounded text-slate-800">admin</code> / Pass: <code class="bg-slate-200 px-1 rounded text-slate-800">admin123</code><br>
+                    • Guru: <code class="bg-slate-200 px-1 rounded text-slate-800">guru</code> / Pass: <code class="bg-slate-200 px-1 rounded text-slate-800">guru123</code>
+                </div>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold rounded-xl text-sm shadow-md transition transform active:scale-98">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Masuk Sekarang
+                </button>
+            </form>
+
+            <!-- SIGNUP FORM -->
+            <form id="formSignup" onsubmit="handleSignup(event)" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Daftar Sebagai</label>
+                    <select id="signupRole" onchange="toggleSignupFields()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
+                        <option value="student">Murid / Siswa</option>
+                        <option value="teacher">Guru / Wali Kelas</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="labelSignupName" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Murid</label>
+                    <input type="text" id="signupFullName" required placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div id="signupClassContainer">
+                        <label id="labelSignupClass" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kelas</label>
+                        <select id="signupClass" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
+                            <option value="1">Kelas 1</option>
+                            <option value="2">Kelas 2</option>
+                            <option value="3">Kelas 3</option>
+                            <option value="4">Kelas 4</option>
+                            <option value="5">Kelas 5</option>
+                            <option value="6">Kelas 6</option>
+                        </select>
+                    </div>
+                    <div id="signupUserContainer" class="col-span-1">
+                        <label id="labelSignupUsername" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">NISN / ID</label>
+                        <input type="text" id="signupUsername" required placeholder="12345678" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Kata Sandi</label>
+                    <input type="password" id="signupPassword" required placeholder="Minimal 4 karakter" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
+                </div>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-sm shadow-md transition transform active:scale-98">
+                    <i class="fa-solid fa-user-plus mr-2"></i> Buat Akun Baru
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="text-[11px] text-slate-400">Pemerintah Kabupaten Pekalongan • SD Negeri 01 Pait</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="bg-gradient-to-r from-red-700 via-rose-700 to-red-800 text-white shadow-lg sticky top-0 z-40 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 sm:px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-xl p-1 shadow-md flex items-center justify-center border border-red-100 flex-shrink-0">
+                    <svg viewBox="0 0 300 300" class="w-full h-full">
+                        <path d="M 150 45 C 210 45, 235 60, 235 180 C 235 210, 180 230, 150 235 C 120 230, 65 210, 65 180 C 65 60, 90 45, 150 45 Z" fill="#2d3e50" />
+                        <path d="M 78 70 L 146 70 L 146 136 L 78 136 Z" fill="#3b9ebb" />
+                        <path d="M 154 70 L 222 70 L 222 136 L 154 136 Z" fill="#e67e22" />
+                        <path d="M 78 144 L 146 144 L 146 205 C 120 205, 90 195, 78 180 Z" fill="#e67e22" />
+                        <path d="M 154 144 L 222 144 L 222 180 C 210 195, 180 205, 154 205 Z" fill="#3b9ebb" />
+                        <path d="M 40 215 L 65 200 L 235 200 L 260 215 L 245 232 L 230 220 L 70 220 L 55 232 Z" fill="#1e2b37" />
+                        <text x="150" y="218" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="18" fill="#ffffff" text-anchor="middle">SDN 01 PAIT</text>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-tight">SD NEGERI 01 PAIT</h1>
+                    <p class="text-xs text-rose-100 font-medium hidden sm:block">Kec. Siwalan, Kab. Pekalongan — Jurnal 7 KAIH</p>
+                </div>
+            </div>
+
+            <!-- Profile Summary & Logout -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 text-xs border border-white/20">
+                    <i class="fa-solid fa-fire text-amber-300 animate-pulse"></i>
+                    <span id="streakCount" class="font-bold">0 Hari</span>
+                </div>
+                <div class="bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full flex items-center gap-2 text-xs font-bold shadow-sm">
+                    <i class="fa-solid fa-star text-amber-800"></i>
+                    <span id="userPoints">0 Pts</span>
+                </div>
+                <button onclick="handleLogout()" class="bg-red-800/80 hover:bg-red-900 text-white p-2 rounded-xl transition text-xs flex items-center gap-1.5 ml-1 border border-white/10" title="Keluar Akun">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden md:inline">Keluar</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow">
+        
+        <!-- Welcome Banner & Date Selector -->
+        <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 no-print">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-xs border border-red-200">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 id="welcomeName" class="text-lg sm:text-xl font-bold text-slate-900">Halo, Teman Hebat!</h2>
+                        <span id="userClassBadge" class="bg-red-100 text-red-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Kelas 1</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-500">SD Negeri 01 Pait - Membangun Karakter Unggul Setiap Hari</p>
+                </div>
+            </div>
+
+            <!-- Date Picker Control -->
+            <div class="flex items-center gap-2 w-full md:w-auto bg-slate-50 p-2 rounded-xl border border-slate-200">
+                <button onclick="navigateDate(-1)" class="p-2 hover:bg-white rounded-lg text-slate-600 transition shadow-xs" title="Hari Sebelumnya">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <input type="date" id="selectedDate" onchange="onDateChanged()" class="bg-transparent text-sm font-semibold text-slate-700 outline-none text-center cursor-pointer flex-grow md:flex-grow-0">
+                <button onclick="navigateDate(1)" class="p-2 hover:bg-white rounded-lg text-slate-600 transition shadow-xs" title="Hari Berikutnya">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+                <button onclick="resetToToday()" class="px-2.5 py-1 text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition">
+                    Hari Ini
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-200 mb-6 gap-2 sm:gap-6 overflow-x-auto no-print">
+            <button onclick="switchTab('tracker')" id="tab-tracker" class="py-3 px-1 sm:px-3 text-sm font-bold border-b-2 border-red-600 text-red-600 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-square-check"></i> Jurnal Harian & Bukti Foto
+            </button>
+            <button onclick="switchTab('stats')" id="tab-stats" class="py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-chart-line"></i> Grafik & Perkembangan
+            </button>
+            <button onclick="switchTab('guide')" id="tab-guide" class="py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-book-open"></i> Panduan 7 KAIH
+            </button>
+            <button onclick="switchTab('badges')" id="tab-badges" class="py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-award"></i> Lencana Prestasi
+            </button>
+            <!-- Teacher Monitor Tab Button -->
+            <button onclick="switchTab('teacher')" id="tab-teacher" class="py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition hidden">
+                <i class="fa-solid fa-chalkboard-user text-blue-600"></i> Pantauan Guru
+            </button>
+            <!-- Admin Panel Tab Button -->
+            <button onclick="switchTab('admin')" id="tab-admin" class="py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition hidden">
+                <i class="fa-solid fa-user-gear text-purple-600"></i> Kelola User (Admin)
+            </button>
+        </div>
+
+        <!-- TAB 1: DAILY TRACKER & REFLECTION JOURNAL -->
+        <div id="content-tracker" class="space-y-6">
+            
+            <!-- Daily Progress Card -->
+            <div class="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 rounded-2xl p-5 text-white shadow-md">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider font-semibold text-red-100">Capaian Kebiasaan Hari Ini</span>
+                        <h3 id="progressText" class="text-2xl font-extrabold">0 dari 7 Kebiasaan Completed</h3>
+                    </div>
+                    <div class="text-3xl font-black text-amber-300" id="progressPercentage">0%</div>
+                </div>
+                <div class="w-full bg-black/20 rounded-full h-3 overflow-hidden p-0.5 border border-white/20">
+                    <div id="progressBar" class="bg-gradient-to-r from-amber-300 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p id="motivationQuote" class="text-xs sm:text-sm text-red-100 mt-3 italic font-medium">
+                    "Semangat murid SD Negeri 01 Pait! Kebiasaan baik membentuk masa depan hebat."
+                </p>
+            </div>
+
+            <!-- List of 7 KAIH Habits -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="habitsContainer">
+                <!-- JavaScript dynamic injection here -->
+            </div>
+
+            <!-- Daily Reflection Journal Box -->
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-book-journal-whills"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Catatan Refleksi Diri Hari Ini</h3>
+                        <p class="text-xs text-slate-500">Tuliskan pengalaman berkesan, tantangan, atau pelajaran yang kamu pelajari hari ini.</p>
+                    </div>
+                </div>
+                <textarea id="dailyJournalNote" rows="3" oninput="saveJournalNote()" placeholder="Contoh: Hari ini di SD Negeri 01 Pait saya merasa sangat gembira karena dapat membaca 2 bab buku cerita bersama teman..." class="w-full p-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-sm text-slate-700 transition resize-y"></textarea>
+                <div class="flex justify-between items-center mt-3 text-xs text-slate-400">
+                    <span id="journalSaveStatus" class="italic">Tersimpan otomatis</span>
+                    <button onclick="printDailySummary()" class="text-red-600 font-semibold hover:underline flex items-center gap-1.5 bg-red-50 px-3 py-1.5 rounded-lg border border-red-200 no-print">
+                        <i class="fa-solid fa-print"></i> Cetak Laporan Jurnal (PDF/Cetak)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: STATISTICS & ANALYTICS -->
+        <div id="content-stats" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Rentetan Hari Konsisten</p>
+                        <h4 id="statStreak" class="text-2xl font-black text-slate-900">0 Hari</h4>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Kebiasaan Terlaksana</p>
+                        <h4 id="statTotalCompleted" class="text-2xl font-black text-slate-900">0</h4>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Poin Karakter</p>
+                        <h4 id="statTotalPoints" class="text-2xl font-black text-slate-900">0 Pts</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Progress Chart -->
+            <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <h3 class="font-bold text-slate-900 text-base mb-1">Grafik Capaian 7 Hari Terakhir</h3>
+                <p class="text-xs text-slate-500 mb-4">Konsistensi pelaksanaan 7 KAIH murid SD Negeri 01 Pait minggu ini.</p>
+                <div class="h-64 w-full">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Breakdown per Habit -->
+            <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <h3 class="font-bold text-slate-900 text-base mb-3">Frekuensi Kebiasaan Selesai</h3>
+                <div id="habitBreakdownList" class="space-y-3">
+                    <!-- Dynamic rendering -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 7 KAIH EDUCATIONAL GUIDE -->
+        <div id="content-guide" class="space-y-6 hidden">
+            <div class="bg-red-50 border border-red-200 rounded-2xl p-5 text-red-900">
+                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-flag text-red-600"></i> Mengenal 7 Kebiasaan Anak Indonesia Hebat (7 KAIH)
+                </h3>
+                <p class="text-sm leading-relaxed text-red-800">
+                    Program 7 KAIH dirancang khusus untuk membangun kedisiplinan, kesehatan mental & fisik, integritas moral, serta rasa cinta kasih sosial bagi seluruh siswa-siswi <strong>SD Negeri 01 Pait</strong>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="guideCardsContainer">
+                <!-- JS Populated Guide Cards -->
+            </div>
+        </div>
+
+        <!-- TAB 4: BADGES & REWARDS -->
+        <div id="content-badges" class="space-y-6 hidden">
+            <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Lencana Achievement Karakter</h3>
+                        <p class="text-xs text-slate-500">Kumpulkan lencana penghargaan dari Sekolah SD Negeri 01 Pait!</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="badgesContainer">
+                    <!-- Dynamic Badges rendering -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: PANTAUAN GURU (TEACHER MONITORING PANEL) -->
+        <div id="content-teacher" class="space-y-6 hidden">
+            <div class="bg-blue-600 text-white p-5 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Dashboard Guru</span>
+                        <h3 class="text-lg font-black">Pemantauan Jurnal 7 KAIH Murid</h3>
+                    </div>
+                    <p class="text-xs text-blue-100 mt-1">Pantau ketercapaian kebiasaan harian murid SD Negeri 01 Pait secara langsung.</p>
+                </div>
+                <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20 w-full md:w-auto">
+                    <i class="fa-solid fa-filter text-white/80 text-xs pl-2"></i>
+                    <select id="teacherClassFilter" onchange="renderTeacherMonitoring()" class="bg-transparent text-white text-xs font-bold outline-none cursor-pointer pr-2">
+                        <option value="all" class="text-slate-800">Semua Kelas</option>
+                        <option value="1" class="text-slate-800">Kelas 1</option>
+                        <option value="2" class="text-slate-800">Kelas 2</option>
+                        <option value="3" class="text-slate-800">Kelas 3</option>
+                        <option value="4" class="text-slate-800">Kelas 4</option>
+                        <option value="5" class="text-slate-800">Kelas 5</option>
+                        <option value="6" class="text-slate-800">Kelas 6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+                    <h4 class="font-bold text-slate-900 text-sm">Daftar Ringkasan Capaian Siswa</h4>
+                    <input type="text" id="teacherSearchInput" onkeyup="renderTeacherMonitoring()" placeholder="Cari nama atau NISN murid..." class="w-full sm:w-64 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-3">Nama Murid</th>
+                                <th class="p-3 text-center">Kelas</th>
+                                <th class="p-3 text-center">Capaian Hari Ini</th>
+                                <th class="p-3 text-center">Total Poin</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherStudentTable" class="divide-y divide-slate-100">
+                            <!-- JS Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: ADMIN USER MANAGEMENT & PASSWORD RESET -->
+        <div id="content-admin" class="space-y-6 hidden">
+            <div class="bg-purple-700 text-white p-5 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Administrator</span>
+                        <h3 class="text-lg font-black">Panel Kelola Akun & Reset Password</h3>
+                    </div>
+                    <p class="text-xs text-purple-100 mt-1">Kewenangan penuh manajemen pengguna SD Negeri 01 Pait.</p>
+                </div>
+                <button onclick="promptCreateUser()" class="px-4 py-2 bg-white text-purple-700 hover:bg-purple-50 font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Tambah Akun Baru
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="font-bold text-slate-900 text-sm">Daftar Pengguna Terdaftar</h4>
+                    <input type="text" id="adminSearchInput" onkeyup="renderAdminUserManagement()" placeholder="Cari username / nama..." class="w-64 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-3">Username / NISN</th>
+                                <th class="p-3">Nama Lengkap</th>
+                                <th class="p-3 text-center">Peran / Kelas</th>
+                                <th class="p-3 text-center">Sandi Saat Ini</th>
+                                <th class="p-3 text-center">Tindakan Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUserTable" class="divide-y divide-slate-100">
+                            <!-- Dynamic admin list -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PRINT SECTION ONLY FOR OFFICIAL REPORTS -->
+    <div class="hidden print-only p-8 max-w-4xl mx-auto">
+        <div class="text-center border-b-2 border-slate-800 pb-4 mb-6">
+            <h1 class="text-xl font-black uppercase tracking-wider">SD NEGERI 01 PAIT</h1>
+            <h2 class="text-base font-bold text-slate-700 uppercase">JURNAL HARIAN 7 KEBIASAAN ANAK INDONESIA HEBAT (7 KAIH)</h2>
+            <p class="text-xs text-slate-600 font-medium">Kecamatan Siwalan, Kabupaten Pekalongan - Jawa Tengah</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-6 text-xs">
+            <div class="space-y-1">
+                <p><strong>Nama Murid:</strong> <span id="printStudentName"></span></p>
+                <p><strong>Kelas:</strong> <span id="printStudentClass"></span></p>
+                <p><strong>NISN / ID:</strong> <span id="printStudentNisn"></span></p>
+            </div>
+            <div class="text-right space-y-1">
+                <p><strong>Tanggal Jurnal:</strong> <span id="printDate"></span></p>
+                <p><strong>Total Capaian:</strong> <span id="printProgress"></span></p>
+                <p><strong>Total Poin Karakter:</strong> <span id="printPoints"></span></p>
+            </div>
+        </div>
+
+        <h3 class="font-bold border-b border-slate-300 pb-1 mb-3 text-xs uppercase tracking-wider">Daftar Kebiasaan & Bukti Foto Hari Ini:</h3>
+        <table class="w-full text-left border-collapse border border-slate-300 mb-6 text-xs">
+            <thead>
+                <tr class="bg-slate-100">
+                    <th class="border border-slate-300 p-2 w-1/4">Kebiasaan 7 KAIH</th>
+                    <th class="border border-slate-300 p-2 text-center w-1/6">Status</th>
+                    <th class="border border-slate-300 p-2">Catatan Keterangan</th>
+                    <th class="border border-slate-300 p-2 text-center w-1/5">Bukti Foto</th>
+                </tr>
+            </thead>
+            <tbody id="printHabitTable">
+                <!-- Dynamically filled -->
+            </tbody>
+        </table>
+        
+        <div class="border border-slate-300 p-3 rounded-lg mb-8 text-xs">
+            <h4 class="font-bold mb-1">Catatan Refleksi Murid:</h4>
+            <p id="printJournalNote" class="italic text-slate-700 min-h-[40px]"></p>
+        </div>
+
+        <div class="flex justify-between items-end text-center text-xs pt-8">
+            <div>
+                <p class="mb-14">Mengetahui Orang Tua / Wali,</p>
+                <p class="font-bold border-b border-slate-800 px-8 inline-block">( _______________________ )</p>
+            </div>
+            <div>
+                <p class="mb-14">Wali Kelas / Guru SD Negeri 01 Pait,</p>
+                <p class="font-bold border-b border-slate-800 px-8 inline-block">( _______________________ )</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-4 no-print">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500">
+            <p>© 2026 SD Negeri 01 Pait (Kec. Siwalan, Kab. Pekalongan) — Aplikasi Jurnal 7 KAIH (Anak Indonesia Hebat)</p>
+        </div>
+    </footer>
+
+    <script>
+        // Default Habits Definition (7 KAIH)
+        const KAIH_HABITS = [
+            {
+                id: 'hab_1',
+                num: 1,
+                title: 'Bangun Pagi',
+                desc: 'Melatih kedisiplinan waktu dan kesiapan mental dalam memulai hari.',
+                icon: 'fa-sun',
+                color: 'amber',
+                tip: 'Cobalah bangun sebelum jam 05.00 WIB, rapikan tempat tidurmu sendiri!'
+            },
+            {
+                id: 'hab_2',
+                num: 2,
+                title: 'Beribadah',
+                desc: 'Membentuk nilai spiritual, integritas, dan kedekatan dengan Tuhan.',
+                icon: 'fa-hands-praying',
+                color: 'emerald',
+                tip: 'Laksanakan ibadah sholat/doa tepat waktu dan awali hari dengan rasa syukur.'
+            },
+            {
+                id: 'hab_3',
+                num: 3,
+                title: 'Berolahraga',
+                desc: 'Menjaga kebugaran fisik, memperkuat mental, dan membuat tubuh tidak mudah sakit.',
+                icon: 'fa-person-running',
+                color: 'blue',
+                tip: 'Lakukan senam, senam lantai, jalan sehat, atau bersepeda minimal 15-30 menit.'
+            },
+            {
+                id: 'hab_4',
+                num: 4,
+                title: 'Makan Sehat & Bergizi',
+                desc: 'Memenuhi nutrisi seimbang serta menghindari makanan yang kurang sehat.',
+                icon: 'fa-utensils',
+                color: 'green',
+                tip: 'Makan makanan 4 sehat 5 sempurna, kurangi jajanan sembarangan dan minuman manis.'
+            },
+            {
+                id: 'hab_5',
+                num: 5,
+                title: 'Gemar Belajar',
+                desc: 'Menumbuhkan rasa ingin tahu dan semangat mencari ilmu.',
+                icon: 'fa-book-open-reader',
+                color: 'indigo',
+                tip: 'Membaca buku cerita, mengulang pelajaran sekolah, atau mengerjakan PR dengan gembira.'
+            },
+            {
+                id: 'hab_6',
+                num: 6,
+                title: 'Bermasyarakat',
+                desc: 'Mengasah empati, kepedulian sosial, dan semangat gotong royong.',
+                icon: 'fa-people-carry-box',
+                color: 'orange',
+                tip: 'Bantu orang tua di rumah, menyapa tetangga, atau piket/gotong royong bersama teman.'
+            },
+            {
+                id: 'hab_7',
+                num: 7,
+                title: 'Tidur Cepat',
+                desc: 'Menjaga kualitas istirahat malam agar tubuh kembali bugar keesokan harinya.',
+                icon: 'fa-bed',
+                color: 'purple',
+                tip: 'Usahakan tidur paling lambat jam 21.00 WIB tanpa main HP di atas kasur.'
+            }
+        ];
+
+        // Global State Management
+        let appState = {
+            users: [],
+            currentUser: null,
+            selectedDate: new Date().toISOString().split('T')[0],
+            records: {}, // Key: userId_date
+            weeklyChart: null
+        };
+
+        function initApp() {
+            // Load Users from LocalStorage
+            const storedUsers = localStorage.getItem('sdn01pait_kaih_users');
+            if (storedUsers) {
+                appState.users = JSON.parse(storedUsers);
+            } else {
+                // Initial Default Accounts
+                appState.users = [
+                    { username: 'admin', password: 'admin123', name: 'Administrator Sekolah', role: 'admin' },
+                    { username: 'guru', password: 'guru123', name: 'Bapak/Ibu Wali Kelas', role: 'teacher', subject: 'Wali Kelas 1-6' },
+                    { username: '12345', password: '123', name: 'Ahmad Budi Santoso', role: 'student', class: '1', points: 35, streak: 3 }
+                ];
+                saveUsers();
+            }
+
+            // Load Daily Records from LocalStorage
+            const storedRecords = localStorage.getItem('sdn01pait_kaih_records');
+            if (storedRecords) {
+                appState.records = JSON.parse(storedRecords);
+            }
+
+            // Set default date picker to today
+            document.getElementById('selectedDate').value = appState.selectedDate;
+
+            // Check if user is already logged in
+            const sessionUser = localStorage.getItem('sdn01pait_kaih_session');
+            if (sessionUser) {
+                const userObj = JSON.parse(sessionUser);
+                const found = appState.users.find(u => u.username === userObj.username);
+                if (found) {
+                    loginUser(found);
+                } else {
+                    showAuthModal(true);
+                }
+            } else {
+                showAuthModal(true);
+            }
+        }
+
+        function saveUsers() {
+            localStorage.setItem('sdn01pait_kaih_users', JSON.stringify(appState.users));
+        }
+
+        function saveRecords() {
+            localStorage.setItem('sdn01pait_kaih_records', JSON.stringify(appState.records));
+        }
+
+        function showAuthModal(show) {
+            const modal = document.getElementById('authOverlay');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function switchAuthTab(tab) {
+            const btnLogin = document.getElementById('authTabLogin');
+            const btnSignup = document.getElementById('authTabSignup');
+            const formLogin = document.getElementById('formLogin');
+            const formSignup = document.getElementById('formSignup');
+
+            if (tab === 'login') {
+                btnLogin.className = "w-1/2 py-2.5 text-center border-b-2 border-red-600 text-red-600 transition font-bold";
+                btnSignup.className = "w-1/2 py-2.5 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition font-bold";
+                formLogin.classList.remove('hidden');
+                formSignup.classList.add('hidden');
+            } else {
+                btnSignup.className = "w-1/2 py-2.5 text-center border-b-2 border-emerald-600 text-emerald-600 transition font-bold";
+                btnLogin.className = "w-1/2 py-2.5 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-600 transition font-bold";
+                formSignup.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+            }
+        }
+
+        function toggleSignupFields() {
+            const role = document.getElementById('signupRole').value;
+            const classContainer = document.getElementById('signupClassContainer');
+            const userContainer = document.getElementById('signupUserContainer');
+            const labelName = document.getElementById('labelSignupName');
+            const labelUsername = document.getElementById('labelSignupUsername');
+
+            if (role === 'teacher') {
+                classContainer.classList.add('hidden');
+                userContainer.classList.remove('col-span-1');
+                userContainer.classList.add('col-span-2');
+                labelName.innerText = "NAMA LENGKAP GURU (DENGAN GELAR)";
+                labelUsername.innerText = "NIP / USERNAME GURU";
+            } else {
+                classContainer.classList.remove('hidden');
+                userContainer.classList.remove('col-span-2');
+                userContainer.classList.add('col-span-1');
+                labelName.innerText = "NAMA LENGKAP MURID";
+                labelUsername.innerText = "NISN / USERNAME MURID";
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('loginRole').value;
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            const foundUser = appState.users.find(u => u.username === username && u.password === password);
+
+            if (!foundUser) {
+                alert('Username / NISN / NIP atau kata sandi tidak cocok!');
+                return;
+            }
+
+            if (foundUser.role !== role) {
+                alert(`Akun ditemukan tetapi peran tidak sesuai (${foundUser.role.toUpperCase()}). Silakan pilih Peran Akses yang benar.`);
+                return;
+            }
+
+            loginUser(foundUser);
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const role = document.getElementById('signupRole').value;
+            const fullName = document.getElementById('signupFullName').value.trim();
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value.trim();
+            const selectedClass = document.getElementById('signupClass').value;
+
+            // Check if username exists
+            if (appState.users.some(u => u.username === username)) {
+                alert('Username / NISN / NIP ini sudah terdaftar! Gunakan ID lain.');
+                return;
+            }
+
+            const newUser = {
+                username: username,
+                password: password,
+                name: fullName,
+                role: role,
+                points: 0,
+                streak: 0
+            };
+
+            if (role === 'student') {
+                newUser.class = selectedClass;
+            } else if (role === 'teacher') {
+                newUser.subject = 'Guru Kelas / Pengajar';
+            }
+
+            appState.users.push(newUser);
+            saveUsers();
+
+            alert('Akun berhasil dibuat! Silakan masuk.');
+            loginUser(newUser);
+        }
+
+        function loginUser(user) {
+            appState.currentUser = user;
+            localStorage.setItem('sdn01pait_kaih_session', JSON.stringify({ username: user.username }));
+            showAuthModal(false);
+
+            // Update Header Information
+            document.getElementById('welcomeName').innerText = `Halo, ${user.name}!`;
+            document.getElementById('userClassBadge').innerText = user.role === 'student' ? `Kelas ${user.class}` : user.role.toUpperCase();
+            
+            // Adjust Visible Navigation Tabs based on Role
+            const tabTeacher = document.getElementById('tab-teacher');
+            const tabAdmin = document.getElementById('tab-admin');
+
+            if (user.role === 'teacher' || user.role === 'admin') {
+                tabTeacher.classList.remove('hidden');
+            } else {
+                tabTeacher.classList.add('hidden');
+            }
+
+            if (user.role === 'admin') {
+                tabAdmin.classList.remove('hidden');
+            } else {
+                tabAdmin.classList.add('hidden');
+            }
+
+            // Render current view
+            switchTab('tracker');
+            renderDailyHabits();
+            updateUserStatsDisplay();
+        }
+
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar dari akun?')) {
+                appState.currentUser = null;
+                localStorage.removeItem('sdn01pait_kaih_session');
+                showAuthModal(true);
+            }
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['tracker', 'stats', 'guide', 'badges', 'teacher', 'admin'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const content = document.getElementById(`content-${t}`);
+
+                if (btn && content) {
+                    if (t === tabId) {
+                        btn.className = "py-3 px-1 sm:px-3 text-sm font-bold border-b-2 border-red-600 text-red-600 flex items-center gap-2 whitespace-nowrap transition";
+                        content.classList.remove('hidden');
+                    } else {
+                        btn.className = "py-3 px-1 sm:px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition";
+                        content.classList.add('hidden');
+                    }
+                }
+            });
+
+            if (tabId === 'stats') renderWeeklyChart();
+            if (tabId === 'guide') renderGuideCards();
+            if (tabId === 'badges') renderBadges();
+            if (tabId === 'teacher') renderTeacherMonitoring();
+            if (tabId === 'admin') renderAdminUserManagement();
+        }
+
+        function getCurrentRecordKey() {
+            if (!appState.currentUser) return '';
+            return `${appState.currentUser.username}_${appState.selectedDate}`;
+        }
+
+        function renderDailyHabits() {
+            const container = document.getElementById('habitsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const key = getCurrentRecordKey();
+            const currentRecord = appState.records[key] || { habits: {}, notes: '', photos: {} };
+
+            let completedCount = 0;
+
+            KAIH_HABITS.forEach(habit => {
+                const isChecked = !!currentRecord.habits[habit.id];
+                if (isChecked) completedCount++;
+
+                const photoData = currentRecord.photos ? currentRecord.photos[habit.id] : null;
+
+                const card = document.createElement('div');
+                card.className = `habit-card bg-white p-4 sm:p-5 rounded-2xl border ${isChecked ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200/80'} shadow-sm flex flex-col justify-between`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between gap-3 mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-lg">
+                                    <i class="fa-solid ${habit.icon}"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">Kebiasaan ${habit.num}</span>
+                                    <h4 class="font-bold text-slate-900 text-base leading-tight">${habit.title}</h4>
+                                </div>
+                            </div>
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleHabit('${habit.id}')" class="w-6 h-6 rounded-lg text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer accent-emerald-600">
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3 leading-relaxed">${habit.desc}</p>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px] text-slate-500 mb-3">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> ${habit.tip}
+                        </div>
+                    </div>
+
+                    <!-- Photo Upload Section -->
+                    <div class="mt-2 pt-3 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-xs mb-2">
+                            <span class="font-bold text-slate-600 flex items-center gap-1">
+                                <i class="fa-solid fa-camera text-slate-400"></i> Bukti Foto
+                            </span>
+                            ${photoData ? `<button onclick="removePhoto('${habit.id}')" class="text-xs text-red-500 hover:underline">Hapus Foto</button>` : ''}
+                        </div>
+                        ${photoData ? `
+                            <div class="relative rounded-xl overflow-hidden h-32 border border-slate-200 group">
+                                <img src="${photoData}" class="w-full h-full object-cover">
+                            </div>
+                        ` : `
+                            <label class="flex items-center justify-center gap-2 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl cursor-pointer text-xs font-semibold transition border border-dashed border-slate-300">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Unggah Foto Kegiatan
+                                <input type="file" accept="image/*" onchange="uploadPhoto(event, '${habit.id}')" class="hidden">
+                            </label>
+                        `}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            // Update Daily Progress Bar
+            const total = KAIH_HABITS.length;
+            const pct = Math.round((completedCount / total) * 100);
+            
+            document.getElementById('progressText').innerText = `${completedCount} dari ${total} Kebiasaan Completed`;
+            document.getElementById('progressPercentage').innerText = `${pct}%`;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+
+            // Update journal notes field
+            document.getElementById('dailyJournalNote').value = currentRecord.notes || '';
+
+            // Confetti if 100% completed
+            if (pct === 100 && typeof confetti === 'function') {
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+            }
+        }
+
+        function toggleHabit(habitId) {
+            const key = getCurrentRecordKey();
+            if (!appState.records[key]) {
+                appState.records[key] = { habits: {}, notes: '', photos: {} };
+            }
+
+            const currentVal = !!appState.records[key].habits[habitId];
+            appState.records[key].habits[habitId] = !currentVal;
+
+            // Recalculate Points
+            if (!currentVal) {
+                appState.currentUser.points = (appState.currentUser.points || 0) + 10;
+            } else {
+                appState.currentUser.points = Math.max(0, (appState.currentUser.points || 0) - 10);
+            }
+
+            saveRecords();
+            saveUsers();
+            renderDailyHabits();
+            updateUserStatsDisplay();
+        }
+
+        function uploadPhoto(event, habitId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                const key = getCurrentRecordKey();
+                if (!appState.records[key]) {
+                    appState.records[key] = { habits: {}, notes: '', photos: {} };
+                }
+                if (!appState.records[key].photos) {
+                    appState.records[key].photos = {};
+                }
+                appState.records[key].photos[habitId] = imgData;
+                saveRecords();
+                renderDailyHabits();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto(habitId) {
+            const key = getCurrentRecordKey();
+            if (appState.records[key] && appState.records[key].photos) {
+                delete appState.records[key].photos[habitId];
+                saveRecords();
+                renderDailyHabits();
+            }
+        }
+
+        function saveJournalNote() {
+            const noteText = document.getElementById('dailyJournalNote').value;
+            const key = getCurrentRecordKey();
+            if (!appState.records[key]) {
+                appState.records[key] = { habits: {}, notes: '', photos: {} };
+            }
+            appState.records[key].notes = noteText;
+            saveRecords();
+
+            const status = document.getElementById('journalSaveStatus');
+            status.innerText = "Tersimpan";
+            setTimeout(() => { status.innerText = "Tersimpan otomatis"; }, 2000);
+        }
+
+        function navigateDate(days) {
+            const current = new Date(appState.selectedDate);
+            current.setDate(current.getDate() + days);
+            appState.selectedDate = current.toISOString().split('T')[0];
+            document.getElementById('selectedDate').value = appState.selectedDate;
+            onDateChanged();
+        }
+
+        function resetToToday() {
+            appState.selectedDate = new Date().toISOString().split('T')[0];
+            document.getElementById('selectedDate').value = appState.selectedDate;
+            onDateChanged();
+        }
+
+        function onDateChanged() {
+            appState.selectedDate = document.getElementById('selectedDate').value;
+            renderDailyHabits();
+        }
+
+        function updateUserStatsDisplay() {
+            if (!appState.currentUser) return;
+            document.getElementById('userPoints').innerText = `${appState.currentUser.points || 0} Pts`;
+            document.getElementById('streakCount').innerText = `${appState.currentUser.streak || 0} Hari`;
+            document.getElementById('statStreak').innerText = `${appState.currentUser.streak || 0} Hari`;
+            document.getElementById('statTotalPoints').innerText = `${appState.currentUser.points || 0} Pts`;
+
+            // Calculate total habits completed across all dates
+            let totalDone = 0;
+            Object.keys(appState.records).forEach(key => {
+                if (key.startsWith(appState.currentUser.username)) {
+                    const h = appState.records[key].habits || {};
+                    totalDone += Object.values(h).filter(Boolean).length;
+                }
+            });
+            document.getElementById('statTotalCompleted').innerText = totalDone;
+        }
+
+        function renderWeeklyChart() {
+            const ctx = document.getElementById('weeklyChart');
+            if (!ctx) return;
+
+            // Generate last 7 days labels
+            const labels = [];
+            const dataCounts = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric' });
+                labels.push(dayName);
+
+                const key = `${appState.currentUser.username}_${dateStr}`;
+                const rec = appState.records[key] || { habits: {} };
+                const count = Object.values(rec.habits || {}).filter(Boolean).length;
+                dataCounts.push(count);
+            }
+
+            if (appState.weeklyChart) {
+                appState.weeklyChart.destroy();
+            }
+
+            appState.weeklyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Kebiasaan Terlaksana',
+                        data: dataCounts,
+                        backgroundColor: '#dc2626',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 7, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+
+            // Breakdown Per Habit
+            const breakdownContainer = document.getElementById('habitBreakdownList');
+            breakdownContainer.innerHTML = '';
+
+            KAIH_HABITS.forEach(habit => {
+                let habitTotal = 0;
+                Object.keys(appState.records).forEach(key => {
+                    if (key.startsWith(appState.currentUser.username)) {
+                        if (appState.records[key].habits && appState.records[key].habits[habit.id]) {
+                            habitTotal++;
+                        }
+                    }
+                });
+
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between text-xs p-2 bg-slate-50 rounded-xl border border-slate-100";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid ${habit.icon} text-red-600"></i>
+                        <span class="font-bold text-slate-700">${habit.title}</span>
+                    </div>
+                    <span class="font-extrabold text-slate-900 bg-white px-2.5 py-1 rounded-lg border border-slate-200">${habitTotal} Hari</span>
+                `;
+                breakdownContainer.appendChild(div);
+            });
+        }
+
+        function renderGuideCards() {
+            const container = document.getElementById('guideCardsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            KAIH_HABITS.forEach(habit => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid ${habit.icon}"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-red-600 uppercase">Kebiasaan ${habit.num}</span>
+                            <h4 class="font-bold text-slate-900 text-base leading-tight">${habit.title}</h4>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">${habit.desc}</p>
+                    <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-700 border border-slate-100">
+                        <strong>Tips Praktis SD Negeri 01 Pait:</strong> ${habit.tip}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badgesContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const badges = [
+                { title: 'Pemula Hebat', pts: 10, icon: 'fa-seedling', color: 'emerald' },
+                { title: 'Anak Disiplin', pts: 50, icon: 'fa-clock', color: 'blue' },
+                { title: 'Bintang Karakter', pts: 100, icon: 'fa-star', color: 'amber' },
+                { title: 'Pahlawan 7 KAIH', pts: 250, icon: 'fa-trophy', color: 'purple' }
+            ];
+
+            const currentPts = appState.currentUser ? (appState.currentUser.points || 0) : 0;
+
+            badges.forEach(b => {
+                const unlocked = currentPts >= b.pts;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border text-center ${unlocked ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200 opacity-60'}`;
+                card.innerHTML = `
+                    <div class="w-12 h-12 mx-auto mb-2 rounded-2xl ${unlocked ? 'bg-amber-400 text-slate-900' : 'bg-slate-200 text-slate-400'} flex items-center justify-center text-xl shadow-xs">
+                        <i class="fa-solid ${b.icon}"></i>
+                    </div>
+                    <h5 class="font-bold text-xs text-slate-900">${b.title}</h5>
+                    <p class="text-[10px] text-slate-500 mt-0.5">${b.pts} Points Required</p>
+                    <span class="inline-block mt-2 px-2 py-0.5 text-[9px] font-bold rounded-full ${unlocked ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'}">
+                        ${unlocked ? 'Terbuka' : 'Terkunci'}
+                    </span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderTeacherMonitoring() {
+            const tableBody = document.getElementById('teacherStudentTable');
+            if (!tableBody) return;
+            tableBody.innerHTML = '';
+
+            const filterClass = document.getElementById('teacherClassFilter').value;
+            const searchVal = document.getElementById('teacherSearchInput').value.toLowerCase();
+
+            const students = appState.users.filter(u => {
+                if (u.role !== 'student') return false;
+                if (filterClass !== 'all' && u.class !== filterClass) return false;
+                if (searchVal && !u.name.toLowerCase().includes(searchVal) && !u.username.includes(searchVal)) return false;
+                return true;
+            });
+
+            if (students.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tidak ada data murid ditemukan.</td></tr>`;
+                return;
+            }
+
+            students.forEach(std => {
+                const key = `${std.username}_${appState.selectedDate}`;
+                const rec = appState.records[key] || { habits: {} };
+                const doneCount = Object.values(rec.habits || {}).filter(Boolean).length;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-slate-800">
+                        ${std.name}
+                        <br><span class="text-[10px] text-slate-400 font-normal">NISN: ${std.username}</span>
+                    </td>
+                    <td class="p-3 text-center font-bold text-slate-600">Kelas ${std.class || '-'}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-1 rounded-full font-bold text-[11px] ${doneCount === 7 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                            ${doneCount} / 7
+                        </span>
+                    </td>
+                    <td class="p-3 text-center font-extrabold text-amber-600">${std.points || 0} Pts</td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewStudentReport('${std.username}')" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg transition text-[11px]">
+                            <i class="fa-solid fa-file-lines mr-1"></i> Lihat Jurnal
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function renderAdminUserManagement() {
+            const tableBody = document.getElementById('adminUserTable');
+            if (!tableBody) return;
+            tableBody.innerHTML = '';
+
+            const searchVal = document.getElementById('adminSearchInput').value.toLowerCase();
+
+            const filteredUsers = appState.users.filter(u => {
+                if (searchVal && !u.name.toLowerCase().includes(searchVal) && !u.username.toLowerCase().includes(searchVal)) return false;
+                return true;
+            });
+
+            filteredUsers.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${u.username}</td>
+                    <td class="p-3 font-medium text-slate-700">${u.name}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : u.role === 'teacher' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}">
+                            ${u.role.toUpperCase()} ${u.class ? `(Kls ${u.class})` : ''}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center font-mono font-bold text-slate-600">${u.password}</td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="resetUserPassword('${u.username}')" class="px-2 py-1 bg-amber-50 text-amber-600 hover:bg-amber-100 rounded font-bold text-[11px]">
+                            <i class="fa-solid fa-key"></i> Reset Sandi
+                        </button>
+                        ${u.username !== 'admin' ? `
+                            <button onclick="deleteUserAccount('${u.username}')" class="px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded font-bold text-[11px]">
+                                <i class="fa-solid fa-trash"></i> Hapus
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function resetUserPassword(username) {
+            const newPass = prompt(`Masukkan Kata Sandi Baru untuk akun (${username}):`, "sdn01pait");
+            if (newPass && newPass.trim() !== '') {
+                const u = appState.users.find(x => x.username === username);
+                if (u) {
+                    u.password = newPass.trim();
+                    saveUsers();
+                    renderAdminUserManagement();
+                    alert(`Kata sandi untuk ${u.name} berhasil diperbarui!`);
+                }
+            }
+        }
+
+        function deleteUserAccount(username) {
+            if (confirm(`Apakah Anda yakin ingin menghapus akun (${username})?`)) {
+                appState.users = appState.users.filter(u => u.username !== username);
+                saveUsers();
+                renderAdminUserManagement();
+            }
+        }
+
+        function promptCreateUser() {
+            switchAuthTab('signup');
+            showAuthModal(true);
+        }
+
+        function viewStudentReport(username) {
+            const std = appState.users.find(u => u.username === username);
+            if (!std) return;
+
+            document.getElementById('printStudentName').innerText = std.name;
+            document.getElementById('printStudentClass').innerText = `Kelas ${std.class || '-'}`;
+            document.getElementById('printStudentNisn').innerText = std.username;
+            document.getElementById('printDate').innerText = appState.selectedDate;
+            document.getElementById('printPoints').innerText = `${std.points || 0} Pts`;
+
+            const key = `${std.username}_${appState.selectedDate}`;
+            const rec = appState.records[key] || { habits: {}, notes: '', photos: {} };
+
+            let doneCount = 0;
+            const printTable = document.getElementById('printHabitTable');
+            printTable.innerHTML = '';
+
+            KAIH_HABITS.forEach(h => {
+                const isDone = !!rec.habits[h.id];
+                if (isDone) doneCount++;
+                const photo = rec.photos ? rec.photos[h.id] : null;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="border border-slate-300 p-2 font-bold">${h.num}. ${h.title}</td>
+                    <td class="border border-slate-300 p-2 text-center">
+                        ${isDone ? '<span class="text-emerald-600 font-bold">✓ Terlaksana</span>' : '<span class="text-slate-400">Belum</span>'}
+                    </td>
+                    <td class="border border-slate-300 p-2 text-slate-600">${h.desc}</td>
+                    <td class="border border-slate-300 p-2 text-center">
+                        ${photo ? `<img src="${photo}" class="w-16 h-12 object-cover mx-auto rounded border">` : '<span class="text-slate-300">-</span>'}
+                    </td>
+                `;
+                printTable.appendChild(tr);
+            });
+
+            document.getElementById('printProgress').innerText = `${doneCount} / 7 Kebiasaan (${Math.round((doneCount/7)*100)}%)`;
+            document.getElementById('printJournalNote').innerText = rec.notes || 'Belum ada catatan refleksi untuk tanggal ini.';
+
+            window.print();
+        }
+
+        function printDailySummary() {
+            if (appState.currentUser) {
+                viewStudentReport(appState.currentUser.username);
+            }
+        }
+
+        // Initialize application on window load
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
